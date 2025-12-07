@@ -11,6 +11,7 @@
 
 ## Используемая грамматика
 
+```bash
 <Program> ::= <Statement>
 <Statement> ::= <While> | <Print> | <Expression> ";"
 <While> ::= "while" "(" <Condition> ")" <Statement>
@@ -19,7 +20,7 @@
 <Primary> ::= identifier | number
 <ComparisonOp> ::= "<" | ">" | "<=" | ">=" | "==" | "!="
 <Print> ::= "print" "(" <Expression> ")" ";"
-
+```
 
 ## Требования
 - Python 3.6 или выше
