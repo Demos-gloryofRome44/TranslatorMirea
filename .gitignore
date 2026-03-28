@@ -20,3 +20,12 @@ Thumbs.db
 *.log
 *.tmp
 *.temp
+
+# lab6: Bison/Flex
+lab6/analyzer
+lab6/*.o
+lab6/y.tab.c
+lab6/y.tab.h
+lab6/lex.yy.c
+lab6/parser.tab.c
+lab6/parser.tab.h
