@@ -1,1 +1,1 @@
-while (i < 5) while (j != 0) print(--j);
+while (++i < 3) while (++j < 5) print(++k);

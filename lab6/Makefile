@@ -4,7 +4,7 @@ CC = gcc
 CFLAGS = -Wall -Wextra -std=c99
 
 TARGET = analyzer
-OBJS = main.o y.tab.o lex.yy.o
+OBJS = main.o y.tab.o lex.yy.o ast.o semantic.o
 
 .PHONY: all clean test
 
@@ -16,28 +16,34 @@ y.tab.c y.tab.h: parser.y
 lex.yy.c: lexer.l y.tab.h
 	flex lexer.l
 
-y.tab.o: y.tab.c
+y.tab.o: y.tab.c ast.h
 	$(CC) $(CFLAGS) -c y.tab.c
 
-lex.yy.o: lex.yy.c
+lex.yy.o: lex.yy.c y.tab.h ast.h
 	$(CC) $(CFLAGS) -c lex.yy.c
 
-main.o: main.c
+main.o: main.c ast.h semantic.h
 	$(CC) $(CFLAGS) -c main.c
+
+ast.o: ast.c ast.h
+	$(CC) $(CFLAGS) -c ast.c
+
+semantic.o: semantic.c semantic.h ast.h
+	$(CC) $(CFLAGS) -c semantic.c
 
 $(TARGET): $(OBJS)
 	$(CC) $(CFLAGS) -o $(TARGET) $(OBJS)
 
 clean:
-	rm -f $(TARGET) main.o y.tab.o lex.yy.o y.tab.c y.tab.h lex.yy.c
+	rm -f $(TARGET) $(OBJS) y.tab.c y.tab.h lex.yy.c
 
 test: $(TARGET)
 	@echo "=== Ожидается успех ==="
 	@for f in tests/ok/*.txt; do \
-		echo "-- $$f"; ./$(TARGET) "$$f" || exit 1; \
+		echo "-- $$f"; ./$(TARGET) "$$f" >/dev/null || exit 1; \
 	done
 	@echo "=== Ожидается ошибка ==="
 	@for f in tests/err/*.txt; do \
-		echo "-- $$f"; ./$(TARGET) "$$f" && exit 1 || true; \
+		echo "-- $$f"; ./$(TARGET) "$$f" >/dev/null 2>&1 && exit 1 || true; \
 	done
 	@echo "Все тесты прошли ожидаемо."

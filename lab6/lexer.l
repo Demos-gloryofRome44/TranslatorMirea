@@ -1,6 +1,8 @@
 %{
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include "ast.h"
 #include "y.tab.h"
 %}
 
@@ -27,16 +29,17 @@
 ")"           { return RPAREN; }
 ";"           { return SEMICOLON; }
 
-[0-9]+"."[0-9]* |
-[0-9]*"."[0-9]+ |
-[0-9]+[eE][+-]?[0-9]+ |
-[0-9]+"."[0-9]*[eE][+-]?[0-9]+ {
+[0-9]+"."[0-9]*([eE][+-]?[0-9]+)? |
+[0-9]*"."[0-9]+([eE][+-]?[0-9]+)? |
+[0-9]+[eE][+-]?[0-9]+ {
+    yylval.dval = atof(yytext);
     return NUMBER;
 }
 
-[0-9]+        { return NUMBER; }
+[0-9]+        { yylval.dval = atof(yytext); return NUMBER; }
 
 [a-zA-Z_][a-zA-Z0-9_]* {
+    yylval.sval = strdup(yytext);
     return IDENTIFIER;
 }
 
